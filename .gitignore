@@ -12,6 +12,10 @@ Thumbs.db
 *.tmp
 *.bak
 
+# Go build output
+devflow-skills
+devflow-skills.exe
+
 # Generated adaptor output
 .agents/skills/
 skills.json
