@@ -1,10 +1,68 @@
 # DevFlow Skills
 
-DevFlow 插件技能集合 —— 独立技能包，包含 [DevFlow](https://github.com/zhouhao4221/devflow-claude) 所有插件的 AI 执行指令（SKILL.md）。
+DevFlow 插件技能集合 —— 独立技能包，包含 [DevFlow](https://github.com/zhouhao4221/devflow-claude) 所有插件的 AI 执行指令（SKILL.md）。支持 OpenCode、Claude Code、Codex 三大 AI 工具。
+
+## 快速开始
+
+使用 CLI 工具一键安装技能到目标 AI 工具目录：
+
+```bash
+# 安装全部技能到 OpenCode
+npx devflow-skills install --tool opencode --all
+
+# 安装指定技能
+npx devflow-skills install --tool opencode --skill req-dev --skill req-review
+
+# 列出所有可用技能
+npx devflow-skills list
+
+# 卸载技能
+npx devflow-skills uninstall --tool opencode --all
+```
+
+首次运行 `npx` 时会自动下载对应平台 Go 二进制，也可通过 Go install 安装：
+
+```bash
+go install github.com/zhouhao4221/devflow-skills@latest
+devflow-skills install --tool claude --all
+```
 
 ## 概述
 
-本仓库从 [devflow-claude](https://github.com/zhouhao4221/devflow-claude) 主仓库中提取所有 SKILL.md 文件，作为独立的技能包提供给 CI 校验和版本管理。每个 SKILL.md 文件定义了 Claude Code 在执行对应命令时的行为指引。
+本仓库从 [devflow-claude](https://github.com/zhouhao4221/devflow-claude) 主仓库中提取所有 SKILL.md 文件，作为独立的技能包提供给 CI 校验、版本管理和跨工具分发。每个 SKILL.md 文件定义了 AI 工具在执行对应命令时的行为指引。
+
+### CLI 命令速览
+
+| 命令 | 说明 |
+|------|------|
+| `install` | 安装技能到目标 AI 工具目录 |
+| `list` | 列出所有可用技能，支持按插件过滤和 JSON 输出 |
+| `uninstall` | 从目标 AI 工具目录卸载技能 |
+
+| 参数 | 说明 |
+|------|------|
+| `--tool opencode\|claude\|codex` | 目标 AI 工具（必填） |
+| `--skill <NAME>` | 要操作的技能名，支持重复指定多个 |
+| `--all` | 操作所有技能（与 `--skill` 互斥） |
+| `--dir <PATH>` | 目标项目根目录（默认 `.`） |
+| `--plugin <NAME>` | 按插件过滤（`list` 命令） |
+| `--format text\|json` | 输出格式（`list` 命令） |
+
+### CLI 安装示例
+
+```bash
+# OpenCode: 安装到 .agents/skills/（扁平命名，如 req-dev）
+npx devflow-skills install --tool opencode --skill req-dev
+
+# Claude Code: 安装到 plugins/req/skills/dev/（分层目录）
+npx devflow-skills install --tool claude --all
+
+# Codex: 安装到 .agents/skills/（扁平命名，同上）
+npx devflow-skills install --tool codex --all
+
+# 指定目标目录
+npx devflow-skills install --tool opencode --all --dir ../my-project
+```
 
 ## 仓库结构
 
@@ -93,7 +151,9 @@ CI 会验证：
 
 ---
 
-## 安装教程
+## 手动安装（适配器脚本）
+
+CLI 工具（上节）已覆盖所有常见场景。如需在不同环境分配不同路径、或嵌入 CI 流程，可通过适配器脚本手动生成。
 
 devflow-skills 作为唯一起源，通过适配器脚本生成各工具兼容的技能目录。以下分别说明 Claude Code、OpenCode、Codex 三工具的安装方式。
 
